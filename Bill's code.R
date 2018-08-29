@@ -60,10 +60,13 @@ for (i in 90800:101547){
 }
 
 #combine the two halves of the dates and well depths
-well <- c(well1, well2)
+well <- unlist(c(well1, well2))
 datetime <- c(datetime1, datetime2)
 
 #combine the two variables into a dataframe
-new_well_data <- data.frame(as.POSIXct(unlist(datetime), origin = "1970-01-01"), unlist(well))
+new_well_data <- data.frame(as.POSIXct(unlist(datetime), origin = "1970-01-01"), well)
 
+#calculate mean and stdev of well variable
+meandepth = mean(well)
+stdevdepth = sd(well)
                             
