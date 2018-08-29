@@ -1,0 +1,118 @@
+---
+title: "Time Series HW #1"
+output: html_notebook
+---
+
+# Activate relevant packages
+```{r}
+#possibly necessary packages for time series analysis
+#if any of these aren't installed/you get an error when running the command, use install.packages("<pkgname>")
+install.packages("readxl")
+install.packages("lubridate")
+library(readxl)
+library(lubridate)
+library(tidyverse)
+library(forecast)
+library(haven)
+library(expsmooth)
+library(lmtest)
+library(zoo)
+library(seasonal)
+```
+
+# Import Excel data as a tibble (dataframe)
+```{r}
+# ensuring correct work directory
+setwd("C:\\Users\\Grant\\Downloads\\")
+getwd()
+
+# importing the Excel file
+path <- "C:\\Users\\Grant\\Downloads\\G-561.xlsx"
+well <- read_excel(path, sheet=3) # need the full filepath to make this work
+
+# converting file to a tibble (like a dataframe, but better)
+well <- as.tibble(well)
+well
+```
+
+# Cleaning data by removing unwanted columns and grouping  
+```{r}
+# calculating avg. corrected well height per day
+well <- well %>% 
+  select(-c(tz_cd, Code, Well_ft)) # dropping three columns
+well # looks good!
+
+# avg. values over day
+well.davg <- well %>%  
+  group_by(date) %>% 
+  summarise(avg = mean(Corrected))  
+well.davg # looks good!
+
+# avg. values over hour, where this each of hour of each day ALL avg. together across the whole time interval
+well.havg <- well %>% 
+  group_by(time) %>% 
+  summarise(avg = mean(Corrected))
+well.havg # looks like we have 15 minute increments everywhere
+```
+
+# Graphing a little
+```{r}
+# depth by day
+ggplot(well.davg, aes(date, avg)) + geom_line() + labs(title = "Avg. Depth in Feet by Day", 
+    y = "Feet, corrected")
+# depth by hour
+ggplot(well.havg, aes(time, avg)) + geom_line() + labs(title = "Avg. Depth in Feet by Hour, ALL Days", 
+    y = "Feet, corrected")
+```
+
+# Checking unique times
+```{r}
+# how many unique times do we have?
+h.ucounts <- well %>% 
+  group_by(time) %>% 
+  summarise(count = n_distinct(time))
+h.ucounts # ???
+
+h.counts <- well %>% 
+  group_by(time) %>% 
+  summarise(count = n())
+h.counts # each 1 hour increment has 3883 to 3905 values, 15 minutes have 111 to 113. Hmmm!
+```
+
+# Comparing with idealized times
+```{r}
+# IGNORE
+well
+time <- well$time
+as.numeric(time)
+# IGNORE
+
+# convert times to strings
+path <- "C:\\Users\\Grant\\Downloads\\G-561.xlsx"
+well_2 <- read_excel(path, sheet=3, range = cell_cols("A:B")) # leave in date col for possible left join
+well_2
+ho <- toString(hour(well_2$time))
+is.na(ho)
+is.na(well_2$time)
+for (i in ho) {
+  if (i == "0") {
+    i == "1"
+    i = as.numeric(i)
+  }
+  if (i != "0"){
+    i = as.numeric(i)
+    i = i + 1
+  }
+}
+?as.numeric
+?readxl
+```
+
+
+
+
+
+
+
+
+
