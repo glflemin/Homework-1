@@ -10,7 +10,11 @@ getwd()
 dir("C:\\Users\\Bill\\Documents\\NCSU\\Course Work\\Fall\\Time Series\\Homework")
 
 # importing the Excel file
+<<<<<<< HEAD
 wbpath <- "C:\\Users\\Bill\\Documents\\NCSU\\Course Work\\Fall\\Time Series\\Homework\\G_561_T.xlsx"
+=======
+wbpath <- "G_561_T.xlsx"
+>>>>>>> bab54e5e1243947cc8e8571956d1aa41c06a0bb5
 G_561_T <- read_excel(wbpath, sheet=3) # need the full filepath to make this work
 
 #initialize lists for holding date-times and well depth data for first chuck of data (hourly section)
