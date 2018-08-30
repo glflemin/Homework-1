@@ -6,13 +6,13 @@ library(dplyr)
 # for cleaning global environment
 #rm(list=ls())
 
-# ensuring correct work directory
+# checking correct work directory
 setwd("C:\\Users\\Steven\\Documents\\MSA\\Analytics Foundations\\lab and hw\\Time Series\\HW1")
 getwd()
 dir("C:\\Users\\Steven\\Documents\\MSA\\Analytics Foundations\\lab and hw\\Time Series\\HW1\\")
 
 # importing the Excel file
-wbpath <- "C:\\Users\\Steven\\Documents\\MSA\\Analytics Foundations\\lab and hw\\Time Series\\HW1\\G_561_T.xlsx"
+wbpath <- "G_561_T.xlsx"
 G_561_T <- read_excel(wbpath, sheet=3) # need the full filepath to make this work
 
 #building ideal vector of dates
@@ -42,18 +42,26 @@ clean_well <- G_561_T %>%
 final_P <- left_join(vdate, clean_well, by='date_time')
 final_J <- left_join(vdate, new_well_data, by='date_time')
 
+# Identifying missing values
+missing_P <- filter(final_P, is.na(mean_corr))
+missing_J <- filter(final_J, is.na(well))
+missing_P_only <- anti_join(missing_P, missing_J, by='date_time')
+missing_J_only <- anti_join(missing_J, missing_P, by='date_time')#identifying discrepancies
+nrow(missing_P_only)
+nrow(missing_J_only) # UGH why don't nrow(missing_P_only) and nrow(missing_J_only) add up to 44!?!?
+View(missing_P_only)
+View(missing_J_only)
 
 
 length(new_well_data$well) #Jenista 93486
 length(vdate[[1]]) #Ideal 93697
 length(clean_well$mean_corr) #Powell 93442
-length(vdate[[1]]) -length(new_well_data$well) #211
-length(vdate[[1]])-length(clean_well$mean_corr) #255
-length(final$mean_corr)-length(vdate[[1]]) #confirming merge created expected length
-View(final)
+length(missing_J[[1]]) #211
+length(missing_P[[1]]) #255
+length(final_P$mean_corr)-length(vdate[[1]]) #confirming merge created expected length
 
 
-# Taking summaries of both datasets for comparison
+# Taking summaries of both datasets for comparison, possible trends
 # Powell Dataset...taking averages of averages in the mean function, but whatever
 final_P_summary <- final_P %>%
   group_by(year=lubridate::year(date_time), month=lubridate::month(date_time)) %>%

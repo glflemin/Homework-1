@@ -10,7 +10,7 @@ getwd()
 dir("C:\\Users\\Steven\\Documents\\MSA\\Analytics Foundations\\lab and hw\\Time Series\\HW1\\")
 
 # importing the Excel file
-wbpath <- "C:\\Users\\Steven\\Documents\\MSA\\Analytics Foundations\\lab and hw\\Time Series\\HW1\\G_561_T.xlsx"
+wbpath <- "G_561_T.xlsx"
 G_561_T <- read_excel(wbpath, sheet=3) # need the full filepath to make this work
 
 #initialize lists for holding date-times and well depth data for first chuck of data (hourly section)
