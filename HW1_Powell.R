@@ -38,7 +38,7 @@ clean_well <- G_561_T %>%
   select(date_time, mean_corr)
 
 #THE MERGE
-final_P <- left_join(vdate, clean_well, by='date_time')
+final_df <- left_join(vdate, clean_well, by='date_time')
 
 ########## Comparion wb/w Bill and Powell's dataframes
 
@@ -46,7 +46,7 @@ final_P <- left_join(vdate, clean_well, by='date_time')
 final_J <- left_join(vdate, new_well_data, by='date_time')
 
 # # Identifying missing values
-# missing_P <- filter(final_P, is.na(mean_corr))
+# missing_P <- filter(final_df, is.na(mean_corr))
 # missing_J <- filter(final_J, is.na(well))
 # missing_P_only <- anti_join(missing_P, missing_J, by='date_time')
 # missing_J_only <- anti_join(missing_J, missing_P, by='date_time')#identifying discrepancies
@@ -61,12 +61,12 @@ final_J <- left_join(vdate, new_well_data, by='date_time')
 # length(clean_well$mean_corr) #Powell 93442
 # length(missing_J[[1]]) #211
 # length(missing_P[[1]]) #255
-# length(final_P$mean_corr)-length(vdate[[1]]) #confirming merge created expected length
+# length(final_df$mean_corr)-length(vdate[[1]]) #confirming merge created expected length
 # 
 # 
 # # Taking summaries of both datasets for comparison, possible trends
 # # Powell Dataset...taking averages of averages in the mean function, but whatever
-# final_P_summary <- final_P %>%
+# final_P_summary <- final_df %>%
 #   group_by(year=lubridate::year(date_time), month=lubridate::month(date_time)) %>%
 #   summarize(mean = mean(mean_corr, na.rm = TRUE), count = n())
 # 
