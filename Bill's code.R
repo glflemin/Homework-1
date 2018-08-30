@@ -1,11 +1,8 @@
-install.packages("lubridate")
-install.packages("readxl")
 
-#Library to manipulate dates
 library(readxl)
-library(lubridate)
+library(lubridate) #Library to manipulate dates
 library(dplyr)
-
+rm(list=ls())
 
 # ensuring correct work directory
 setwd("C:\\Users\\Steven\\Documents\\MSA\\Analytics Foundations\\lab and hw\\Time Series\\HW1")
@@ -15,8 +12,6 @@ dir("C:\\Users\\Steven\\Documents\\MSA\\Analytics Foundations\\lab and hw\\Time 
 # importing the Excel file
 wbpath <- "C:\\Users\\Steven\\Documents\\MSA\\Analytics Foundations\\lab and hw\\Time Series\\HW1\\G_561_T.xlsx"
 G_561_T <- read_excel(wbpath, sheet=3) # need the full filepath to make this work
-
-
 
 #initialize lists for holding date-times and well depth data for first chuck of data (hourly section)
 datetime1 = list(Sys.time())
@@ -80,6 +75,7 @@ datetime <- c(datetime1, datetime2)
 
 #combine the two variables into a dataframe
 new_well_data <- data.frame(as.POSIXct(unlist(datetime), origin = "1970-01-01"), well)
+colnames(new_well_data)[1] <- 'date_time'
 
 #calculate mean and stdev of well variable
 meandepth = mean(well)
