@@ -4,17 +4,10 @@ library(lubridate) #Library to manipulate dates
 library(dplyr)
 rm(list=ls())
 
-# ensuring correct work directory
-setwd("C:\\Users\\Bill\\Documents\\NCSU\\Course Work\\Fall\\Time Series\\Homework")
-getwd()
-dir("C:\\Users\\Bill\\Documents\\NCSU\\Course Work\\Fall\\Time Series\\Homework")
 
+getwd() # checking current work directory
 # importing the Excel file
-<<<<<<< HEAD
-wbpath <- "C:\\Users\\Bill\\Documents\\NCSU\\Course Work\\Fall\\Time Series\\Homework\\G_561_T.xlsx"
-=======
-wbpath <- "G_561_T.xlsx"
->>>>>>> bab54e5e1243947cc8e8571956d1aa41c06a0bb5
+wbpath <- "C:\\Users\\Steven\\Documents\\MSA\\Analytics Foundations\\lab and hw\\Time Series\\HW1\\Homework-1\\G_561_T.xlsx"
 G_561_T <- read_excel(wbpath, sheet=3) # need the full filepath to make this work
 
 #initialize lists for holding date-times and well depth data for first chuck of data (hourly section)
