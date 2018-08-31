@@ -60,17 +60,10 @@ decomp_stl <- stl(df, s.window = 7, na.action = na.approx)
 
 #Plot Decomposition
 plot(decomp_stl)
-plot(df)
+plot(df, xlab = "Time (Years)", ylab = "Depth (Ft)")
 
-
-
-
-
-
-
-
-
-
+plot(df, col = "grey", main = "Well Depth - Trend/Cycle", xlab = "", ylab = "Depth (Feet) ", lwd = 2)
+lines(decomp_stl$time.series[,2], col = "red", lwd = 2)#plotting the trend line on the time series data
 
 
 
