@@ -53,7 +53,7 @@ rm(list=setdiff(ls(), "final_df"))
 str(final_df)
 
 #Creation of Time Series Data Object
-df <- ts(final_df$mean_corr, start = 1, frequency = 8760)
+df <- ts(final_df$mean_corr, start = c(2007,10,5,0), frequency = 8760)
 colnames(df) <- "Time (Years)"
 
 # Time Series Decomposition ...STL# #STL=Seasonal, Trend, Low S
@@ -63,8 +63,8 @@ decomp_stl <- stl(df, s.window = 7, na.action = na.approx)
 
 #Plot Decomposition
 plot.ts(decomp_stl)
-plot(df, xlab = "Time (Years)", ylab = "Depth (Ft)")
-plot.ts(df, major.format = "%m-%d-%Y", xlab="Date", ylab = "Value")
+plot.ts(df, xlab = "Year", ylab = "Depth (Ft)")
+plot(df, xlab = "Year", ylab = "Depth (Ft)")
 
 plot(df, col = "grey", main = "Well Depth - Trend/Cycle", xlab = "Time (Years)", ylab = "Depth (Feet) ", lwd = 2)
 lines(decomp_stl$time.series[,2], col = "red", lwd = 2)#plotting the trend line on the time series data
