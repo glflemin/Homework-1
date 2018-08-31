@@ -37,8 +37,14 @@ clean_well <- G_561_T %>%
   summarise(mean_corr=mean(Corrected)) %>%
   select(date_time, mean_corr)
 
+meandepth = mean(clean_well$mean_corr)
+stdevdepth = sd(clean_well$mean_corr)
+meandepth
+stdevdepth
+
 #THE MERGE
 final_df <- left_join(vdate, clean_well, by='date_time')
+
 
 ########## Comparion wb/w Bill and Powell's dataframes
 
