@@ -5,7 +5,7 @@ library(lubridate)
 library(dplyr)
 library(zoo)
 # for cleaning global environment
-#rm(list=ls())
+rm(list=ls())
 
 
 # ensuring correct work directory
@@ -43,12 +43,14 @@ clean_well <- G_561_T %>%
   summarise(mean_corr=mean(Corrected)) %>%
   select(date_time, mean_corr)
 
-#calc avg srdev
+#calc avg stdev
 meandepth = mean(clean_well$mean_corr, na.rm=TRUE)
 stdevdepth = sd(clean_well$mean_corr, na.rm=TRUE)
 
 #THE MERGE
 final_df <- left_join(vdate, clean_well, by='date_time')
+rm(list=setdiff(ls(), "final_df"))
+str(final_df)
 
 #Creation of Time Series Data Object
 df <- ts(final_df$mean_corr, start = 1, frequency = 8760)
@@ -60,8 +62,9 @@ decomp_stl <- stl(df, s.window = 7, na.action = na.approx)
 #s.window you have to have this, and it should be odd and no less than 7.  Moving average.
 
 #Plot Decomposition
-plot(decomp_stl)
+plot.ts(decomp_stl)
 plot(df, xlab = "Time (Years)", ylab = "Depth (Ft)")
+plot.ts(df, major.format = "%m-%d-%Y", xlab="Date", ylab = "Value")
 
 plot(df, col = "grey", main = "Well Depth - Trend/Cycle", xlab = "Time (Years)", ylab = "Depth (Feet) ", lwd = 2)
 lines(decomp_stl$time.series[,2], col = "red", lwd = 2)#plotting the trend line on the time series data
