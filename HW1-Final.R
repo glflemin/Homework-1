@@ -12,10 +12,11 @@ library(zoo)
 #this.dir <- dirname(parent.frame(2)$ofile)
 #setwd(this.dir)
 
-setwd('C:\\Users\\gavin\\Desktop\\Time_Series_Data\\')
-
+#setwd('C:\\Users\\gavin\\Desktop\\Time_Series_Data\\')
+setwd("C:\\Users\\Steven\\Documents\\MSA\\Analytics Foundations\\lab and hw\\Time Series\\HW1\\Homework-1\\")
 # importing the Excel file
-wbpath <- "C:\\Users\\gavin\\Desktop\\Time_Series_Data\\G-561_T.xlsx"
+wbpath <- "C:\\Users\\Steven\\Documents\\MSA\\Analytics Foundations\\lab and hw\\Time Series\\HW1\\Homework-1\\G_561_T.xlsx"
+#wbpath <- "C:\\Users\\gavin\\Desktop\\Time_Series_Data\\G-561_T.xlsx"
 
 G_561_T <- read_excel(wbpath, sheet=3) # need the full filepath to make this work
 
@@ -35,9 +36,6 @@ colnames(vdate) <- 'date_time' #renaming vector to match other merge datafram
 G_561_T$date_time <- paste(G_561_T$date," ", lubridate::hour(G_561_T$time),":00:00", sep = "")
 G_561_T$date_time <- as.POSIXct(G_561_T$date_time, tz="EST")
 
-#calc avg srdev
-meandepth = mean(G_561_T$Corrected)
-stdevdepth = sd(G_561_T$Corrected)
 
 #grouping water levels by taking average of each hour
 clean_well <- G_561_T %>%
@@ -45,13 +43,16 @@ clean_well <- G_561_T %>%
   summarise(mean_corr=mean(Corrected)) %>%
   select(date_time, mean_corr)
 
+#calc avg srdev
+meandepth = mean(clean_well$mean_corr, na.rm=TRUE)
+stdevdepth = sd(clean_well$mean_corr, na.rm=TRUE)
 
 #THE MERGE
 final_df <- left_join(vdate, clean_well, by='date_time')
 
 #Creation of Time Series Data Object
 df <- ts(final_df$mean_corr, start = 1, frequency = 8760)
-
+colnames(df) <- "Time (Years)"
 
 # Time Series Decomposition ...STL# #STL=Seasonal, Trend, Low S
 decomp_stl <- stl(df, s.window = 7, na.action = na.approx) 
@@ -62,50 +63,5 @@ decomp_stl <- stl(df, s.window = 7, na.action = na.approx)
 plot(decomp_stl)
 plot(df, xlab = "Time (Years)", ylab = "Depth (Ft)")
 
-plot(df, col = "grey", main = "Well Depth - Trend/Cycle", xlab = "", ylab = "Depth (Feet) ", lwd = 2)
+plot(df, col = "grey", main = "Well Depth - Trend/Cycle", xlab = "Time (Years)", ylab = "Depth (Feet) ", lwd = 2)
 lines(decomp_stl$time.series[,2], col = "red", lwd = 2)#plotting the trend line on the time series data
-
-
-
-########## Comparion wb/w Bill and Powell's dataframes
-
-#If you didn't run 'Bill's Code.R' prior to this, you'll hit errors here.
-#final_J <- left_join(vdate, new_well_data, by='date_time')
-
-# # Identifying missing values
-# missing_P <- filter(final_df, is.na(mean_corr))
-# missing_J <- filter(final_J, is.na(well))
-# missing_P_only <- anti_join(missing_P, missing_J, by='date_time')
-# missing_J_only <- anti_join(missing_J, missing_P, by='date_time')#identifying discrepancies
-# nrow(missing_P_only)
-# nrow(missing_J_only) # UGH why don't nrow(missing_P_only) and nrow(missing_J_only) add up to 44!?!?
-# View(missing_P_only)
-# View(missing_J_only)
-# 
-# 
-# length(new_well_data$well) #Jenista 93486
-# length(vdate[[1]]) #Ideal 93697
-# length(clean_well$mean_corr) #Powell 93442
-# length(missing_J[[1]]) #211
-# length(missing_P[[1]]) #255
-# length(final_df$mean_corr)-length(vdate[[1]]) #confirming merge created expected length
-# 
-# 
-# # Taking summaries of both datasets for comparison, possible trends
-# # Powell Dataset...taking averages of averages in the mean function, but whatever
-# final_P_summary <- final_df %>%
-#   group_by(year=lubridate::year(date_time), month=lubridate::month(date_time)) %>%
-#   summarize(mean = mean(mean_corr, na.rm = TRUE), count = n())
-# 
-# # Jenista Dataset
-# final_J_summary <- final_J %>%
-#   group_by(year=lubridate::year(date_time), month=lubridate::month(date_time)) %>%
-#   summarize(mean = mean(well, na.rm = TRUE), count = n())
-# 
-# 
-# #subtracting: Jenista - Powell to identify areas of error
-# comparison <- final_P_summary - final_J_summary
-# comparison$month <- final_P_summary$month
-# comparison$year <- final_P_summary$year
-# View(comparison)
-# sum(comparison$count) # distributed diffences match the previous difference(sum=44)
